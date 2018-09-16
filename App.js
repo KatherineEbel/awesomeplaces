@@ -1,27 +1,25 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import { StyleSheet, View } from 'react-native';
 import PlaceList from './src/components/PlaceList/PlaceList';
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
-import placeImage from './src/assets/sydneyaustralia.jpg';
+import PlaceDetail from './src/components/PlaceDetail/PlaceDetail';
 
 type Props = {};
 export default class App extends Component<Props> {
   state = {
     placeName: '',
-    places: []
+    places: [],
+    selectedPlace: null
   };
   
   render() {
     return (
       <View style={styles.container}>
+        <PlaceDetail
+          place={this.state.selectedPlace}
+          closed={this.modalClosedHandler}
+          itemDeleted={this.placeDeletedHandler}
+        />
         <PlaceInput
           placeName={this.state.placeName}
           inputChanged={this.placeNameChangedHandler}
@@ -31,6 +29,10 @@ export default class App extends Component<Props> {
       </View>
     );
   }
+  
+  modalClosedHandler = () => {
+    this.setState({selectedPlace: null})
+  };
   
   placeNameChangedHandler = val => {
     this.setState({placeName: val})
@@ -45,15 +47,27 @@ export default class App extends Component<Props> {
         places: prev.places.concat({
           key: Math.random(),
           name: placeName,
-          image: placeImage
+          image: {
+            uri: 'https://images.pexels.com/photos/54610/sydney-opera-house-australia-54610.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'
+          }
         })
       };
     });
   };
   
+  placeDeletedHandler = () => {
+    this.setState(prevState => {
+      const places = prevState.places
+                              .filter(place => place.key !== prevState.selectedPlace.key);
+      return {
+        places,
+        selectedPlace: null
+      }
+    });
+  };
+  
   onItemPressedHandler = key => {
-    const places = this.state.places.filter(place => place.key !== key);
-    this.setState({places});
+    this.setState({selectedPlace: this.state.places.find(p => p.key === key)})
   };
 }
 
