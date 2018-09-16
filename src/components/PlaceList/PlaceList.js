@@ -8,7 +8,13 @@ const placeList = props => {
     <FlatList 
       style={styles.listContainer}
       data={places}
-      renderItem={(place) => <ListItem placeName={place.value} pressed={() => itemPressed(i)}/>}
+      keyExtractor={place => place.key.toString()}
+      renderItem={({item}) => (
+        <ListItem
+          placeName={item.name}
+          placeImage={item.image}
+          pressed={() => itemPressed(item.key)}/>
+      )}
     />
   );
 };

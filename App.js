@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import { StyleSheet, View } from 'react-native';
 import PlaceList from './src/components/PlaceList/PlaceList';
 import PlaceInput from './src/components/PlaceInput/PlaceInput';
+import placeImage from './src/assets/sydneyaustralia.jpg';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -41,13 +42,17 @@ export default class App extends Component<Props> {
     }
     this.setState(prev => {
       return {
-        places: prev.places.concat({key: Math.random(), value: placeName})
+        places: prev.places.concat({
+          key: Math.random(),
+          name: placeName,
+          image: placeImage
+        })
       };
     });
   };
   
   onItemPressedHandler = key => {
-    const places = this.state.places.filter((_,idx) => idx !== key);
+    const places = this.state.places.filter(place => place.key !== key);
     this.setState({places});
   };
 }
